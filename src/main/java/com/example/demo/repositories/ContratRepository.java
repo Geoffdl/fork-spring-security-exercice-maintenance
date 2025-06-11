@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface ContratRepository extends JpaRepository<Contrat, Integer> {
     @Query(value = "SELECT * FROM contrat WHERE user_app_id = :userAppId ", nativeQuery = true)
+    List<Contrat> findByUserAppIdNative(Integer userAppId);
+    
     List<Contrat> findByUserAppId(Integer userAppId);
 }

@@ -21,8 +21,11 @@ public class UserAppService {
     private BCryptPasswordEncoder bcrypt;
 
     public void createUserApp(UserApp userApp, String role) throws Exception {
-        Optional<UserApp> userAppOptional = userAppRepository.findByUsername(userApp.getUsername());
-        UserApp newUserApp = new UserApp(userApp.getUsername(), userApp.getPassword(), role);
+        Optional<UserApp> userAppOptional = userAppRepository.findByUsername(userApp.getUsername()); //La recherche d'utilisateur existant est présente mais ne retournait pas d'erreur en cas d'utilisateur présent
+        if(userAppOptional.isPresent()){
+            throw new RuntimeException("L'utilisateur existe déjà");
+        }
+        UserApp newUserApp = new UserApp(userApp.getUsername(), bcrypt.encode(userApp.getPassword()), role); //encoder le mot de passe à l'insertion
 
         userAppRepository.save(
                 newUserApp
@@ -31,10 +34,10 @@ public class UserAppService {
 
     public ResponseCookie logUserApp(UserApp userApp) throws Exception {
         Optional<UserApp> userAppOptional = userAppRepository.findByUsername(userApp.getUsername());
-        if(userAppOptional.isPresent() && bcrypt.matches(userAppOptional.get().getPassword(), userApp.getPassword()) ){
+        if(userAppOptional.isPresent() && bcrypt.matches(userApp.getPassword(), userAppOptional.get().getPassword()) ){ // la verif de pw est inversée
             return jwtAuthentificationService.generateToken(userApp.getUsername());
         }
-        throw new Exception();
+        throw new Exception("L'identifiant ou le mot de passe est incorrect"); //ajout message erreur
     }
 
     public UserApp getUserApp(String username){

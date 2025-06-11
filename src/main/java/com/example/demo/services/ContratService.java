@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.ContratDto;
+import com.example.demo.mapper.ContratMapper;
 import com.example.demo.models.Contrat;
 import com.example.demo.models.UserApp;
 import com.example.demo.repositories.ContratRepository;
@@ -16,13 +18,16 @@ public class ContratService {
     @Autowired
     private UserAppService userAppService;
 
-    public List<Contrat> getAll() {
-        return contratRepository.findAll();
+    public List<ContratDto> getAll() {     //retourner list de dto (évite de filtrer les pw)
+        return ContratMapper.toDtoList(contratRepository.findAll());
     }
 
-    public List<Contrat> getAllByUserAppId(Integer userAppId) throws Exception {
+    public List<ContratDto> getAllByUserAppId(Integer userAppId) throws Exception {  //retourner list de dto (évite de filtrer les pw)
         UserApp userApp = userAppService.getUserAppById(userAppId);
-        return contratRepository.findByUserAppId(userAppId);
+        if(userApp == null){
+            throw new RuntimeException("Utilisateur non trouvé"); // exception si utilisateur non trouvé
+        }
+        return ContratMapper.toDtoList(contratRepository.findByUserAppId(userAppId));
     }
 
     public void createContrat(LocalDate dateDebut, LocalDate dateFin, UserApp userApp) {
@@ -30,7 +35,7 @@ public class ContratService {
     }
 
     public void deleteContratById(Integer id) {
-        Contrat contrat = contratRepository.findById(id).get();
+        Contrat contrat = contratRepository.findById(id).orElseThrow(() -> new RuntimeException("Pas de contrat trouvé")); //exception si contrat non trouvé
         contrat.setUserApp(null);
         contratRepository.delete(contrat);
     }

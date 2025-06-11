@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.dto.ContratDto;
 import com.example.demo.models.Contrat;
 import com.example.demo.models.UserApp;
 import com.example.demo.services.ContratService;
@@ -24,12 +25,12 @@ public class ContratController {
     JwtAuthentificationService jwtAuthentificationService;
 
     @GetMapping("/get-all")
-    public List<Contrat> getAll() throws Exception {
+    public List<ContratDto> getAll() throws Exception { // <- retourne un dto au lieu d'une entité jpa
         return contratService.getAll();
     }
 
     @GetMapping("/get-all-by-user-app-id/{idUserApp}")
-    public List<Contrat> getAllByUserAppId(@PathVariable Integer idUserApp) throws Exception {
+    public List<ContratDto> getAllByUserAppId(@PathVariable Integer idUserApp) throws Exception { // <- retourne un dto au lieu d'une entité jpa
         return contratService.getAllByUserAppId(idUserApp);
     }
 
@@ -46,7 +47,7 @@ public class ContratController {
         return "contrat créé";
     }
 
-    @GetMapping("/delete-contrat-by-id/{idContrat}")
+    @DeleteMapping("/delete-contrat-by-id/{idContrat}")
     public String deleteContratById(@PathVariable Integer idContrat) throws Exception {
          contratService.deleteContratById(idContrat);
         return "contrat supprimé";

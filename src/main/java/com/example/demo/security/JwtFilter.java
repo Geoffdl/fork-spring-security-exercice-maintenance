@@ -44,15 +44,27 @@ public class JwtFilter extends OncePerRequestFilter {
         if (req.getCookies() != null) {
             Stream.of(req.getCookies()).filter(cookie -> cookie.getName().equals(TOKEN_COOKIE)).map(Cookie::getValue)
                     .forEach(token -> {
+                        
+                        if(jwtAuthentificationService.validateToken(token)){ // validation du token
+                        
                         String username = jwtAuthentificationService.getSubject(token);
-                        UserApp userApp = userAppService.getUserApp(username);
-                        UsernamePasswordAuthenticationToken auth =
-                                new UsernamePasswordAuthenticationToken(
-                                        username,
-                                        null,
-                                        List.of(new SimpleGrantedAuthority(userApp.getRole()))
-                                );
-                        SecurityContextHolder.getContext().setAuthentication(auth);
+                            
+                            try
+                            {
+                                UserApp userApp = userAppService.getUserApp(username);
+                                UsernamePasswordAuthenticationToken auth =
+                                        new UsernamePasswordAuthenticationToken(
+                                                username,
+                                                null,
+                                                List.of(new SimpleGrantedAuthority(userApp.getRole()))
+                                        );
+                                SecurityContextHolder.getContext().setAuthentication(auth);
+                            }
+                            catch (Exception e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
                     });
         }
         filterChain.doFilter(req, response);

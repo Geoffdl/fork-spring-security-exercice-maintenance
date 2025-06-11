@@ -22,7 +22,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter toto) throws Exception {
         http
-
+              .csrf(csrf-> csrf.disable()) // ajout de csrf.disable pour activer post request sans gestion des csrf token
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/hello/public", "/auth/create-user","/auth/create-admin", "/auth/login", "/h2-console/**").permitAll()
                         .requestMatchers("/delete-contrat-by-id/").hasRole("ADMIN")
