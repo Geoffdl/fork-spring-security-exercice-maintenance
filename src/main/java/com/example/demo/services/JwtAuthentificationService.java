@@ -44,8 +44,13 @@ public class JwtAuthentificationService
                 .maxAge(EXPIRES_IN * 1000).path("/").build();
     }
 
-    public String getSubject(String token) {
-       return Jwts.parser().setSigningKey(getSecuredKey()).parseClaimsJws(token).getBody().getSubject();
+    public String getSubject(String token) {// <- changement vers méthodes non dépréciées de Jwts
+       return Jwts.parserBuilder()
+                  .setSigningKey(getSecuredKey())
+                  .build()
+                  .parseClaimsJwt(token)
+                  .getBody()
+                  .getSubject();
     };
 
     public String getUsernameFromCookie(HttpServletRequest request) throws Exception {
@@ -66,10 +71,11 @@ public class JwtAuthentificationService
         throw new Exception("Nothing found with cookie");
     }
 
-    public Boolean validateToken(String token) {
+    public Boolean validateToken(String token) { // <- changement vers méthodes non dépréciées de Jwts
         try {
-            Claims claims = Jwts.parser()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSecuredKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -80,7 +86,7 @@ public class JwtAuthentificationService
             System.out.println("Format du token non supporté");
         } catch (MalformedJwtException e) {
             System.out.println("Token malformé");
-        } catch (SignatureException e) {
+        } catch (SecurityException e) {   // Changement vers une version non dépréciée
             System.out.println("Signature invalide");
         } catch (IllegalArgumentException e) {
             System.out.println("Token vide ou null");
