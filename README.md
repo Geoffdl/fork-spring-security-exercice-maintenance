@@ -1,5 +1,9 @@
-application.properties :
+Appli débuggée dans la branche /dev/debug
 
+
+
+application.properties :
+```
 spring.application.name=demo
 server.port=8081
 
@@ -13,3 +17,4 @@ spring.datasource.username=sa
 spring.datasource.password=
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.h2.console.enabled=true
+```
