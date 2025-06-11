@@ -2,19 +2,13 @@ package com.example.demo.services;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
-import java.io.IOException;
 import java.util.Date;
 import java.util.stream.Stream;
 
@@ -22,7 +16,7 @@ import java.util.stream.Stream;
 @Service
 public class JwtAuthentificationService
 {
-
+    
     @Value("${jwt.expires_in}")
     private Integer EXPIRES_IN;
 
@@ -48,7 +42,7 @@ public class JwtAuthentificationService
        return Jwts.parserBuilder()
                   .setSigningKey(getSecuredKey())
                   .build()
-                  .parseClaimsJwt(token)
+                  .parseClaimsJws(token)
                   .getBody()
                   .getSubject();
     };

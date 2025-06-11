@@ -5,7 +5,6 @@ import com.example.demo.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -45,7 +44,7 @@ public class UserAppService {
         if(userAppOptional.isPresent()){
             return userAppOptional.get();
         }
-        return null;
+        throw new RuntimeException("Utilisatuer non trouvé");
     }
 
     public UserApp getUserAppById(Integer userId) throws Exception {
